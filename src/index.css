@@ -1,145 +1,162 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap'); /* Added Montserrat */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&display=swap');
 
 :root {
-  /* --- Base Variables --- */
-  --font-primary: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
-  --font-weight-normal: 400;
-  --font-weight-bold: 700;
-  --font-weight-heavy: 900;
-  --line-height-normal: 1.5;
-  --border-radius-small: 4px;
-  --border-radius-medium: 8px;
-  --transition-speed: 0.3s;
+    /* --- Base Variables --- */
+    --font-primary: 'Montserrat', system-ui, Avenir, Helvetica, Arial, sans-serif;
+    --font-weight-normal: 400;
+    --font-weight-bold: 700;
+    --font-weight-heavy: 900;
+    --line-height-normal: 1.5;
+    --border-radius-small: 4px;
+    --border-radius-medium: 8px;
+    --transition-speed: 0.3s;
 
-  /* --- Dark Theme (Default) --- */
-  --bg-primary-dark: #1a1a1d; /* Very dark grey */
-  --bg-secondary-dark: #2c2f33; /* Slightly lighter grey */
-  --text-primary-dark: #e2e2e2; /* Slightly dimmer off-white */
-  --text-secondary-dark: #a0a0a0; /* Slightly dimmer light grey */
-  --accent-primary-dark: #6c5ce7; /* Vibrant purple */
-  --accent-secondary-dark: #a29bfe; /* Lighter purple */
-  --border-color-dark: #404040;
-  --highlight-bg-dark: rgba(108, 92, 231, 0.2); /* Semi-transparent accent */
-  --gradient-bg-dark: linear-gradient(135deg, #1a1a1d, #2c2f33);
-  --shadow-color-dark: rgba(0, 0, 0, 0.2);
+    /* --- Theme Variables (set in light/dark mode classes) --- */
+    /* These are set by the theme classes and not directly here */
 
-  /* --- Light Theme --- */
-  --bg-primary-light: #f8f8fa; /* Very light off-white */
-  --bg-secondary-light: #ffffff; /* White */
-  --text-primary-light: #1f1f1f; /* Slightly lighter dark grey */
-  --text-secondary-light: #505050; /* Slightly lighter medium grey */
-  --accent-primary-light: #6c5ce7; /* Keep vibrant purple */
-  --accent-secondary-light: #8e44ad; /* Darker purple for contrast */
-  --border-color-light: #e0e0e0;
-  --highlight-bg-light: rgba(108, 92, 231, 0.1); /* Lighter highlight */
-  --gradient-bg-light: linear-gradient(135deg, #f8f8fa, #ffffff);
-  --shadow-color-light: rgba(0, 0, 0, 0.1);
-
-  /* --- Apply Dark Theme by Default --- */
-  --bg-primary: var(--bg-primary-dark);
-  --bg-secondary: var(--bg-secondary-dark);
-  --text-primary: var(--text-primary-dark);
-  --text-secondary: var(--text-secondary-dark);
-  --accent-primary: var(--accent-primary-dark);
-  --accent-secondary: var(--accent-secondary-dark);
-  --border-color: var(--border-color-dark);
-  --highlight-bg: var(--highlight-bg-dark);
-  --gradient-bg: var(--gradient-bg-dark);
-  --shadow-color: var(--shadow-color-dark);
-
-  font-family: var(--font-primary);
-  line-height: var(--line-height-normal);
-  font-weight: var(--font-weight-normal);
-
-  color: var(--text-primary);
-  background: var(--gradient-bg);
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    font-family: var(--font-primary);
+    line-height: var(--line-height-normal);
+    font-weight: var(--font-weight-normal);
+    font-synthesis: none;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
-body.light-mode {
-  /* --- Apply Light Theme --- */
-  --bg-primary: var(--bg-primary-light);
-  --bg-secondary: var(--bg-secondary-light);
-  --text-primary: var(--text-primary-light);
-  --text-secondary: var(--text-secondary-light);
-  --accent-primary: var(--accent-primary-light);
-  --accent-secondary: var(--accent-secondary-light);
-  --border-color: var(--border-color-light);
-  --highlight-bg: var(--highlight-bg-light);
-  --gradient-bg: var(--gradient-bg-light);
-  --shadow-color: var(--shadow-color-light);
+/* Disable transitions initially to prevent flash */
+html {
+    transition: none;
+}
+
+/* Enable transitions after initial render */
+html.theme-transitions-enabled,
+html.theme-transitions-enabled * {
+    transition: background-color 0.2s ease,
+        color 0.2s ease,
+        border-color 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+/* Dark Theme */
+html.dark-mode {
+    --bg-primary: #1a1a1d;
+    /* Very dark grey */
+    --bg-secondary: #2c2f33;
+    /* Slightly lighter grey */
+    --text-primary: #e2e2e2;
+    /* Slightly dimmer off-white */
+    --text-secondary: #a0a0a0;
+    /* Slightly dimmer light grey */
+    --accent-primary: #6c5ce7;
+    /* Vibrant purple */
+    --accent-secondary: #a29bfe;
+    /* Lighter purple */
+    --border-color: #404040;
+    --highlight-bg: rgba(108, 92, 231, 0.2);
+    /* Semi-transparent accent */
+    --gradient-bg: linear-gradient(135deg, #1a1a1d, #2c2f33);
+    --shadow-color: rgba(0, 0, 0, 0.2);
+}
+
+/* Light Theme */
+html.light-mode {
+    --bg-primary: #f8f8fa;
+    /* Very light off-white */
+    --bg-secondary: #ffffff;
+    /* White */
+    --text-primary: #1f1f1f;
+    /* Slightly lighter dark grey */
+    --text-secondary: #505050;
+    /* Slightly lighter medium grey */
+    --accent-primary: #6c5ce7;
+    /* Keep vibrant purple */
+    --accent-secondary: #8e44ad;
+    /* Darker purple for contrast */
+    --border-color: #e0e0e0;
+    --highlight-bg: rgba(108, 92, 231, 0.1);
+    /* Lighter highlight */
+    --gradient-bg: linear-gradient(135deg, #f8f8fa, #ffffff);
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Generic theme variables for both light and dark mode */
+html.light-mode body,
+html.dark-mode body {
+    color: var(--text-primary);
+    background: var(--gradient-bg);
 }
 
 * {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
 }
 
 body {
-  min-height: 100vh;
-  width: 100%;
-  color: var(--text-primary);
-  background: var(--gradient-bg);
-  font-family: var(--font-primary);
-  transition: background var(--transition-speed) ease, color var(--transition-speed) ease;
+    min-height: 100vh;
+    width: 100%;
+    font-family: var(--font-primary);
 }
 
 /* Basic resets - specific styles will be added via components/modules */
 a {
-  color: var(--accent-primary);
-  text-decoration: none;
-  transition: color var(--transition-speed) ease;
+    color: var(--accent-primary);
+    text-decoration: none;
+    transition: color var(--transition-speed) ease;
 }
+
 a:hover {
-  color: var(--accent-secondary);
+    color: var(--accent-secondary);
 }
 
 button {
-  font-family: inherit;
-  cursor: pointer;
-  background: none;
-  border: none;
-  padding: 0;
-  color: inherit;
-  font-size: inherit;
+    font-family: inherit;
+    cursor: pointer;
+    background: none;
+    border: none;
+    padding: 0;
+    color: inherit;
+    font-size: inherit;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    font-weight: var(--font-weight-heavy); /* Use heavy font for headings */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    font-weight: var(--font-weight-heavy);
+    /* Use heavy font for headings */
 }
-
-/* Placeholder for global input/textarea styles if needed */
 
 /* --- Custom Scrollbars --- */
 /* Works in Webkit-based browsers (Chrome, Safari, Edge) */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+    width: 8px;
+    height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: var(--bg-primary);
-  border-radius: 4px;
+    background: var(--bg-primary);
+    border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb {
-  background-color: var(--border-color);
-  border-radius: 4px;
-  border: 2px solid var(--bg-primary); /* Creates padding around thumb */
+    background-color: var(--border-color);
+    border-radius: 4px;
+    border: 2px solid var(--bg-primary);
+    /* Creates padding around thumb */
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background-color: var(--text-secondary);
+    background-color: var(--text-secondary);
 }
 
 /* Firefox scrollbar styling (more limited) */
 /* Requires Firefox 64+ */
 * {
-  scrollbar-width: thin; /* "auto" or "thin" */
-  scrollbar-color: var(--border-color) var(--bg-primary); /* thumb and track color */
+    scrollbar-width: thin;
+    /* "auto" or "thin" */
+    scrollbar-color: var(--border-color) var(--bg-primary);
+    /* thumb and track color */
 }

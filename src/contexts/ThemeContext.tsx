@@ -28,19 +28,11 @@ interface ThemeProviderProps {
 }
 
 export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-    // Read from localStorage or fall back to system preference
+    // Read from localStorage - our preload script already handled initial theme application
     const getInitialTheme = (): Theme => {
-        // Check if there's a saved theme preference
-        const savedTheme = localStorage.getItem(THEME_KEY) as Theme | null;
-        const themeSource = localStorage.getItem(THEME_SOURCE_KEY) as ThemeSource | null;
-
-        // If user has explicitly set a theme, use it
-        if (savedTheme && themeSource === 'user') {
-            return savedTheme;
-        }
-
-        // Otherwise use system preference
-        return getSystemTheme();
+        // The preload script already saved the theme to localStorage
+        const savedTheme = localStorage.getItem(THEME_KEY) as Theme;
+        return savedTheme === 'dark' ? 'dark' : 'light'; // Default to light if null
     };
 
     const [theme, setTheme] = useState<Theme>(getInitialTheme);
@@ -102,14 +94,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         };
     }, [themeSource]);
 
-    // Apply theme to body
+    // Apply theme to HTML element
     useEffect(() => {
-        const body = window.document.body;
-        body.classList.remove(theme === 'light' ? 'dark-mode' : 'light-mode');
-        body.classList.add(theme === 'light' ? 'light-mode' : 'dark-mode');
+        const html = document.documentElement;
+
+        // Remove previous theme classes
+        html.classList.remove('light-mode', 'dark-mode');
+
+        // Add new theme class
+        const themeClass = theme === 'light' ? 'light-mode' : 'dark-mode';
+        html.classList.add(themeClass);
 
         // Save current theme to localStorage even when system-determined
         localStorage.setItem(THEME_KEY, theme);
+
+        // Enable transitions after a delay
+        const timeoutId = setTimeout(() => {
+            html.classList.add('theme-transitions-enabled');
+        }, 300); // Short delay to ensure no transition on first render
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
     }, [theme]);
 
     const value = useMemo(() => ({

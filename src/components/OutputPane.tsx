@@ -196,8 +196,9 @@ const OutputPane: React.FC<OutputPaneProps> = ({
     return (
         <div className={styles.outputPane}>
             <h2 className={styles.title}>{getTitle()}</h2>
+
             <div className={styles.controls}>
-                {/* Only show search for tree view */}
+                {/* Search bar for Tree View */}
                 {inputType !== 'html' ? (
                     <SearchBar
                         searchTerm={searchTerm}
@@ -210,30 +211,37 @@ const OutputPane: React.FC<OutputPaneProps> = ({
                         inputRef={searchInputRef}
                     />
                 ) : (
-                    <div className={styles.htmlControls}>
+                    <div></div> // Empty div to maintain flex layout
+                )}
+
+                {/* Controls group for both HTML and Tree view */}
+                <div className={styles.buttonGroup}>
+                    {/* JavaScript toggle button only for HTML view */}
+                    {inputType === 'html' && (
                         <button
                             onClick={toggleJsEnabled}
                             className={`${styles.controlButton} ${jsEnabled ? styles.jsEnabled : styles.jsDisabled}`}
                             title={`JavaScript is ${jsEnabled ? 'enabled' : 'disabled'}`}
                             aria-label={`Toggle JavaScript ${jsEnabled ? 'off' : 'on'}`}
                         >
-                            <FiCode /> {jsEnabled ? 'JavaScript Enabled' : 'JavaScript Disabled'}
+                            <FiCode />
                         </button>
-                    </div>
-                )}
+                    )}
 
-                {/* Only show expand/collapse for tree view */}
-                {inputType !== 'html' && (
-                    <div className={styles.buttonGroup}>
-                        <button onClick={expandAll} title="Expand All" className={styles.controlButton}>
-                            <FiMaximize />
-                        </button>
-                        <button onClick={collapseAll} title="Collapse All" className={styles.controlButton}>
-                            <FiMinimize />
-                        </button>
-                    </div>
-                )}
+                    {/* Expand/collapse buttons only for Tree view */}
+                    {inputType !== 'html' && (
+                        <>
+                            <button onClick={expandAll} title="Expand All" className={styles.controlButton}>
+                                <FiMaximize />
+                            </button>
+                            <button onClick={collapseAll} title="Collapse All" className={styles.controlButton}>
+                                <FiMinimize />
+                            </button>
+                        </>
+                    )}
+                </div>
             </div>
+
             <div className={styles.treeContainer}>
                 {renderContent()}
             </div>

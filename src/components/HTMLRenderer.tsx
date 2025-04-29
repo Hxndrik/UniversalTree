@@ -1,7 +1,6 @@
 import React, { useRef, useEffect } from 'react';
 import { useJavaScriptSafety } from '../contexts/JavaScriptSafetyContext';
 import styles from './HTMLRenderer.module.css';
-import { FiAlertTriangle } from 'react-icons/fi';
 
 interface HTMLRendererProps {
     htmlContent: string;
@@ -103,15 +102,7 @@ const HTMLRenderer: React.FC<HTMLRendererProps> = ({ htmlContent }) => {
 
     return (
         <div className={styles.htmlRendererContainer}>
-            {!jsEnabled && (
-                // <div className={styles.jsDisabledBanner}>
-                //     <FiAlertTriangle className={styles.alertIcon} />
-                //     <span>JavaScript is disabled for security. Toggle in controls to enable.</span>
-                // </div>
-                <div></div>
-                // * Commented out the banner for now, but you can uncomment it if needed
-
-            )}
+            {!jsEnabled}
             <iframe
                 ref={iframeRef}
                 title="HTML Content"

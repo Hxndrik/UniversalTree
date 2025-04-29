@@ -9,6 +9,49 @@
     <meta name="keywords" content="JSON, XML, tree view, data visualization, hierarchical data, editor" />
     <meta name="author" content="H. Osterberg" />
     <title>Universal Tree - Data Visualization Tool</title>
+
+    <!-- Improved theme preload script - ensure it executes immediately -->
+    <script type="text/javascript">
+        // Execute immediately - this prevents any flash of incorrect theme
+        (function () {
+            try {
+                // Get theme from localStorage or system preference
+                const savedTheme = localStorage.getItem('universal-tree-theme') || null;
+                const themeSource = localStorage.getItem('universal-tree-theme-source') || null;
+
+                // Check system preference
+                const prefersDark = window.matchMedia &&
+                    window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+                // Determine which theme to use
+                let theme;
+                if (savedTheme && themeSource === 'user') {
+                    // User explicitly set theme
+                    theme = savedTheme;
+                } else {
+                    // Use system preference
+                    theme = prefersDark ? 'dark' : 'light';
+                }
+
+                // Store the theme in localStorage for consistency
+                localStorage.setItem('universal-tree-theme', theme);
+
+                // Apply theme class immediately
+                document.documentElement.classList.remove('light-mode', 'dark-mode');
+                document.documentElement.classList.add(theme === 'dark' ? 'dark-mode' : 'light-mode');
+
+                // Hide content briefly until styles are applied (prevents flash)
+                document.documentElement.style.visibility = 'hidden';
+                window.addEventListener('DOMContentLoaded', function () {
+                    document.documentElement.style.visibility = '';
+                });
+            } catch (e) {
+                console.error('Error in theme preload script:', e);
+                // Fallback - ensure content is visible even if script fails
+                document.documentElement.style.visibility = '';
+            }
+        })();
+    </script>
 </head>
 
 <body>
