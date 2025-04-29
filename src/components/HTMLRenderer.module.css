@@ -1,0 +1,42 @@
+.htmlRendererContainer {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+    /* Add overflow handling */
+}
+
+.htmlFrame {
+    flex-grow: 1;
+    border: none;
+    width: 100%;
+    height: 100%;
+    background-color: white;
+    /* Use white background for HTML content */
+    margin: 0;
+    /* Remove any margin */
+    display: block;
+    /* Ensure block display */
+}
+
+.jsDisabledBanner {
+    display: flex;
+    align-items: center;
+    background-color: #fff3cd;
+    /* Light warning color */
+    color: #856404;
+    /* Dark warning text */
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--border-radius-small);
+    font-size: 0.85rem;
+    flex-shrink: 0;
+    /* Prevent banner from being compressed */
+}
+
+.alertIcon {
+    margin-right: 0.5rem;
+    font-size: 1.1rem;
+}

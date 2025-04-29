@@ -4,7 +4,8 @@ import { XMLParser, XMLValidator } from 'fast-xml-parser';
 interface ParserResult {
     data: unknown | null; // Parsed data (can be any type)
     error: string | null; // Error message if parsing fails
-    inputType: 'json' | 'xml' | 'unknown' | 'empty'; // Detected input type
+    inputType: 'json' | 'xml' | 'html' | 'unknown' | 'empty'; // Added 'html' type
+    rawContent?: string; // Raw content for HTML rendering
 }
 
 // Configure the XML parser
@@ -268,6 +269,20 @@ function parseJsonWithDuplicateKeys(input: string): unknown {
     }
 }
 
+/**
+ * Function to detect if content is actually HTML
+ * This only identifies content as HTML if it contains specific HTML structural elements
+ */
+function detectHtml(input: string): boolean {
+    // Trim whitespace
+    const trimmed = input.trim();
+
+    // Only identify as HTML if it contains specific HTML structural elements
+    const hasHtmlStructure = /<!DOCTYPE\s+html|<html|<head|<body/i.test(trimmed);
+
+    return hasHtmlStructure;
+}
+
 export const useParser = (input: string): ParserResult => {
     const [result, setResult] = useState<ParserResult>({
         data: null,
@@ -283,7 +298,18 @@ export const useParser = (input: string): ParserResult => {
             return;
         }
 
-        // Try parsing as JSON first with our custom parser
+        // First, check if it's likely HTML
+        if (detectHtml(trimmedInput)) {
+            setResult({
+                data: null,
+                error: null,
+                inputType: 'html',
+                rawContent: trimmedInput
+            });
+            return; // Successfully identified as HTML
+        }
+
+        // Try parsing as JSON with our custom parser
         try {
             // Use our custom parser that preserves duplicate keys
             const jsonData = parseJsonWithDuplicateKeys(trimmedInput);
@@ -330,7 +356,7 @@ export const useParser = (input: string): ParserResult => {
                 // XML validation failed
                 setResult({
                     data: null,
-                    error: `Input is not valid JSON or XML. ${validationResult.err?.msg ? `XML Error: ${validationResult.err.msg}` : ''}`.trim(),
+                    error: `Input is not valid JSON, XML, or HTML. ${validationResult.err?.msg ? `XML Error: ${validationResult.err.msg}` : ''}`.trim(),
                     inputType: 'unknown',
                 });
                 return;

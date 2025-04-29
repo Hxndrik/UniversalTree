@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react'; // Import hooks and useRef
 import styles from './InputPane.module.css'; // Import CSS Module
 import SearchBar from './SearchBar'; // Import SearchBar
+import { FiChevronDown, FiCode, FiFileText, FiGrid, FiCopy, FiCornerUpLeft, FiCornerUpRight } from 'react-icons/fi'; // Added undo/redo/copy icons
+import { defaultJsonTemplate, defaultXmlTemplate, defaultHtmlTemplate } from '../utils/DefaultTemplates'; // Import templates
 
 interface InputPaneProps {
     inputValue: string;
@@ -44,6 +46,15 @@ const InputPane: React.FC<InputPaneProps> = ({
     const containerRef = useRef<HTMLDivElement>(null); // Ref for the container
     const [searchResults, setSearchResults] = useState<number[]>([]); // Store indices
     const [currentResultIndex, setCurrentResultIndex] = useState<number>(-1);
+    const [showTemplateMenu, setShowTemplateMenu] = useState<boolean>(false);
+    const templateButtonRef = useRef<HTMLButtonElement>(null);
+    const templateMenuRef = useRef<HTMLDivElement>(null);
+
+    // Undo/redo history management
+    const [history, setHistory] = useState<string[]>([inputValue]); // Initialize with current value
+    const [historyIndex, setHistoryIndex] = useState<number>(0);
+    const isUndoRedoAction = useRef<boolean>(false);
+
     const [textareaMetrics, setTextareaMetrics] = useState<{
         lineHeight: number;
         charWidth: number;
@@ -57,8 +68,80 @@ const InputPane: React.FC<InputPaneProps> = ({
     });
 
     const handleChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        onInputChange(event.target.value);
+        const newValue = event.target.value;
+        onInputChange(newValue);
+
+        // Only add to history if it's not an undo/redo action
+        if (!isUndoRedoAction.current) {
+            // Add to history, remove any future states if we've gone back in history
+            const newHistory = [...history.slice(0, historyIndex + 1), newValue];
+            // Keep a reasonable history size (max 100 steps)
+            if (newHistory.length > 100) {
+                newHistory.shift();
+            }
+            setHistory(newHistory);
+            setHistoryIndex(newHistory.length - 1);
+        } else {
+            // Reset the flag
+            isUndoRedoAction.current = false;
+        }
     };
+
+    // Handle undo action
+    const handleUndo = () => {
+        if (historyIndex > 0) {
+            isUndoRedoAction.current = true;
+            setHistoryIndex(historyIndex - 1);
+            onInputChange(history[historyIndex - 1]);
+        }
+    };
+
+    // Handle redo action
+    const handleRedo = () => {
+        if (historyIndex < history.length - 1) {
+            isUndoRedoAction.current = true;
+            setHistoryIndex(historyIndex + 1);
+            onInputChange(history[historyIndex + 1]);
+        }
+    };
+
+    // Handle copy to clipboard
+    const handleCopy = () => {
+        if (textAreaRef.current) {
+            navigator.clipboard.writeText(textAreaRef.current.value)
+                .then(() => {
+                    // Optional: Could add a small visual feedback that copy was successful
+                })
+                .catch(err => {
+                    console.error('Failed to copy text: ', err);
+                });
+        }
+    };
+
+    // Template insertion handlers
+    const insertTemplate = (template: string) => {
+        onInputChange(template);
+        setShowTemplateMenu(false);
+    };
+
+    // Handle click outside to close the template menu
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (
+                templateMenuRef.current &&
+                !templateMenuRef.current.contains(event.target as Node) &&
+                templateButtonRef.current &&
+                !templateButtonRef.current.contains(event.target as Node)
+            ) {
+                setShowTemplateMenu(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
 
     // Calculate textarea metrics on mount for positioning highlights
     useEffect(() => {
@@ -180,25 +263,91 @@ const InputPane: React.FC<InputPaneProps> = ({
     return (
         <div className={styles.inputPane}>
             <h2 className={styles.title}>Input</h2>
-            <div className={styles.controls}>
-                <SearchBar
-                    searchTerm={searchTerm}
-                    onSearchChange={onSearchChange}
-                    placeholder="Search input..."
-                    resultCount={searchResults.length}
-                    currentResultIndex={currentResultIndex}
-                    onNext={handleNext}
-                    onPrevious={handlePrevious}
-                    inputRef={searchInputRef}
-                />
+            <div className={styles.controlsRow}>
+                {/* Search bar */}
+                <div className={styles.searchBarContainer}>
+                    <SearchBar
+                        searchTerm={searchTerm}
+                        onSearchChange={onSearchChange}
+                        placeholder="Search input..."
+                        resultCount={searchResults.length}
+                        currentResultIndex={currentResultIndex}
+                        onNext={handleNext}
+                        onPrevious={handlePrevious}
+                        inputRef={searchInputRef}
+                    />
+                </div>
+
+                {/* Template dropdown */}
+                <div className={styles.templateDropdown}>
+                    <button
+                        ref={templateButtonRef}
+                        onClick={() => setShowTemplateMenu(!showTemplateMenu)}
+                        className={styles.templateButton}
+                        title="Insert template"
+                    >
+                        Insert Default <FiChevronDown className={styles.dropdownIcon} />
+                    </button>
+
+                    {showTemplateMenu && (
+                        <div ref={templateMenuRef} className={styles.templateMenu}>
+                            <button
+                                className={styles.templateMenuItem}
+                                onClick={() => insertTemplate(defaultJsonTemplate)}
+                            >
+                                <FiCode className={styles.templateIcon} /> JSON Template
+                            </button>
+                            <button
+                                className={styles.templateMenuItem}
+                                onClick={() => insertTemplate(defaultXmlTemplate)}
+                            >
+                                <FiFileText className={styles.templateIcon} /> XML Template
+                            </button>
+                            <button
+                                className={styles.templateMenuItem}
+                                onClick={() => insertTemplate(defaultHtmlTemplate)}
+                            >
+                                <FiGrid className={styles.templateIcon} /> HTML Template
+                            </button>
+                        </div>
+                    )}
+                </div>
+
+                {/* Edit buttons */}
+                <div className={styles.editButtons}>
+                    <button
+                        onClick={handleUndo}
+                        className={styles.editButton}
+                        disabled={historyIndex <= 0}
+                        title="Undo"
+                    >
+                        <FiCornerUpLeft />
+                    </button>
+                    <button
+                        onClick={handleRedo}
+                        className={styles.editButton}
+                        disabled={historyIndex >= history.length - 1}
+                        title="Redo"
+                    >
+                        <FiCornerUpRight />
+                    </button>
+                    <button
+                        onClick={handleCopy}
+                        className={styles.editButton}
+                        title="Copy to clipboard"
+                    >
+                        <FiCopy />
+                    </button>
+                </div>
             </div>
+
             <div className={styles.textAreaContainer} ref={containerRef}>
                 <textarea
                     ref={textAreaRef} // Attach ref
                     className={styles.textArea}
                     value={inputValue}
                     onChange={handleChange}
-                    placeholder="Enter JSON or XML here..."
+                    placeholder="Enter JSON, XML, or HTML here..."
                     spellCheck="false" // Disable spellcheck for code-like input
                 />
 
@@ -209,8 +358,8 @@ const InputPane: React.FC<InputPaneProps> = ({
                         <div
                             key={index}
                             className={`${styles.highlightMarker} ${pos.isCurrent
-                                    ? styles.currentHighlight
-                                    : ''
+                                ? styles.currentHighlight
+                                : ''
                                 }`}
                             style={{
                                 left: `${pos.left}px`,

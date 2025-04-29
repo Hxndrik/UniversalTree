@@ -4,6 +4,7 @@ import OutputPane from './components/OutputPane';
 import ThemeToggle from './components/ThemeToggle'; // Import ThemeToggle
 import { useParser } from './hooks/useParser'; // Import the hook
 import styles from './App.module.css'; // Import the CSS module
+import { JavaScriptSafetyProvider } from './contexts/JavaScriptSafetyContext';
 
 // Default JSON content
 const defaultJsonInput = `{
@@ -12,6 +13,7 @@ const defaultJsonInput = `{
   "features": [
     "JSON Parsing",
     "XML Parsing",
+    "HTML Rendering",
     "Tree View",
     "Theming",
     "Search"
@@ -25,7 +27,7 @@ const defaultJsonInput = `{
 
 const App: React.FC = () => { // Add React.FC type
     const [rawInput, setRawInput] = useState<string>(defaultJsonInput); // Initialize with default JSON
-    const { data: parsedData, error: parseError, inputType } = useParser(rawInput); // Use the parser hook
+    const { data: parsedData, error: parseError, inputType, rawContent } = useParser(rawInput); // Use the parser hook
     const [inputSearchTerm, setInputSearchTerm] = useState<string>(''); // State for input search
     const [outputSearchTerm, setOutputSearchTerm] = useState<string>(''); // State for output search
 
@@ -90,41 +92,44 @@ const App: React.FC = () => { // Add React.FC type
 
     // Main layout adjustments for header and error message
     return (
-        <div className={styles.appContainer}>
-            {/* Header Section */}
-            <div className={styles.header}>
-                <h1 className={styles.title}>Universal Tree</h1>
-                <ThemeToggle /> {/* ThemeToggle positioning might need adjustment in its own CSS */}
-            </div>
-
-            {/* Main Content Panes */}
-            <div className={styles.mainContent}>
-                <InputPane
-                    inputValue={rawInput}
-                    onInputChange={setRawInput}
-                    searchTerm={inputSearchTerm}
-                    onSearchChange={setInputSearchTerm}
-                    searchInputRef={inputSearchRef} // Pass the ref
-                    textAreaRef={inputTextAreaRef} // Pass textarea ref
-                />
-                <OutputPane
-                    data={parsedData}
-                    error={parseError}
-                    inputType={inputType}
-                    searchTerm={outputSearchTerm}
-                    onSearchChange={setOutputSearchTerm}
-                    searchInputRef={outputSearchRef} // Pass the ref
-                    onDataChange={handleDataChange} // Add data change handler
-                />
-            </div>
-
-            {/* Error Display Area */}
-            {parseError && (
-                <div className={styles.errorMessage}>
-                    <strong>Parsing Error:</strong> {parseError}
+        <JavaScriptSafetyProvider>
+            <div className={styles.appContainer}>
+                {/* Header Section */}
+                <div className={styles.header}>
+                    <h1 className={styles.title}>Universal Tree</h1>
+                    <ThemeToggle /> {/* ThemeToggle positioning might need adjustment in its own CSS */}
                 </div>
-            )}
-        </div>
+
+                {/* Main Content Panes */}
+                <div className={styles.mainContent}>
+                    <InputPane
+                        inputValue={rawInput}
+                        onInputChange={setRawInput}
+                        searchTerm={inputSearchTerm}
+                        onSearchChange={setInputSearchTerm}
+                        searchInputRef={inputSearchRef} // Pass the ref
+                        textAreaRef={inputTextAreaRef} // Pass textarea ref
+                    />
+                    <OutputPane
+                        data={parsedData}
+                        error={parseError}
+                        inputType={inputType}
+                        searchTerm={outputSearchTerm}
+                        onSearchChange={setOutputSearchTerm}
+                        searchInputRef={outputSearchRef} // Pass the ref
+                        onDataChange={handleDataChange} // Add data change handler
+                        rawContent={rawContent} // Pass raw content for HTML rendering
+                    />
+                </div>
+
+                {/* Error Display Area */}
+                {parseError && (
+                    <div className={styles.errorMessage}>
+                        <strong>Parsing Error:</strong> {parseError}
+                    </div>
+                )}
+            </div>
+        </JavaScriptSafetyProvider>
     );
 }
 

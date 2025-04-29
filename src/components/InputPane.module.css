@@ -2,7 +2,6 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    /* Take up available space */
     padding: 1rem;
     background-color: var(--bg-secondary);
     border: 1px solid var(--border-color);
@@ -10,7 +9,6 @@
     box-shadow: 0 2px 5px var(--shadow-color);
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
     overflow: hidden;
-    /* Prevent content overflow */
 }
 
 .title {
@@ -19,29 +17,151 @@
     color: var(--text-primary);
 }
 
-/* Add styles for the highlight overlay container */
+/* Combined controls row */
+.controlsRow {
+    display: flex;
+    margin-bottom: 0.75rem;
+    gap: 0.5rem;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: 36px;
+    /* Enforce consistent height for the row */
+}
+
+/* Search bar container */
+.searchBarContainer {
+    flex: 0 0 auto;
+    /* Don't grow, don't shrink, auto basis */
+    display: flex;
+    height: 36px;
+    /* Match height with other controls */
+}
+
+/* Template dropdown styling */
+.templateDropdown {
+    position: relative;
+    flex-shrink: 0;
+    margin-left: 0.5rem;
+    height: 36px;
+    /* Match height with other controls */
+}
+
+.templateButton {
+    display: flex;
+    align-items: center;
+    padding: 0 0.75rem;
+    height: 36px;
+    /* Match height with other controls */
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.templateButton:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+/* Edit buttons container */
+.editButtons {
+    display: flex;
+    gap: 0.5rem;
+    margin-left: auto;
+    /* Push to the right */
+}
+
+/* Edit button styling */
+.editButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    background-color: var(--bg-primary);
+    color: var(--text-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    cursor: pointer;
+    transition: all var(--transition-speed) ease;
+}
+
+.editButton:hover:not(:disabled) {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.editButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Other dropdown styles */
+.dropdownIcon {
+    margin-left: 0.5rem;
+    font-size: 0.8rem;
+}
+
+.templateMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 0.25rem;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+    z-index: 100;
+    overflow: hidden;
+    min-width: 180px;
+}
+
+.templateMenuItem {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    text-align: left;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.templateMenuItem:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+.templateIcon {
+    margin-right: 0.5rem;
+}
+
+/* Text area container */
 .textAreaContainer {
     position: relative;
     flex-grow: 1;
     display: flex;
-    /* Add display flex to properly size children */
     flex-direction: column;
-    /* Stack children vertically */
     width: 100%;
-    height: 100%;
-    /* Ensure it takes full height */
+    height: calc(100% - 40px - 0.75rem);
+    /* Adjust height to match output pane */
+    min-height: 200px;
+    /* Minimum height */
 }
 
 .textArea {
     position: relative;
     flex-grow: 1;
-    /* Fill remaining vertical space */
     width: 100%;
     height: 100%;
-    /* Ensure it fills the container height */
     padding: 0.75rem;
     font-family: 'Courier New', Courier, monospace;
-    /* Monospace for code-like input */
     font-size: 0.9rem;
     line-height: 1.4;
     color: var(--text-primary);
@@ -49,7 +169,6 @@
     border: 1px solid var(--border-color);
     border-radius: var(--border-radius-small);
     resize: none;
-    /* Disable manual resizing */
     outline: none;
     transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
 }
@@ -63,32 +182,12 @@
 .highlightMarker {
     position: absolute;
     background-color: rgba(255, 215, 0, 0.4);
-    /* Semi-transparent yellow */
     border-radius: 2px;
     pointer-events: none;
-    /* Allow clicks to pass through to textarea */
     z-index: 5;
 }
 
 .currentHighlight {
     background-color: rgba(255, 165, 0, 0.6);
-    /* More visible orange for current match */
     outline: 1px solid rgb(255, 140, 0);
-}
-
-/* Add styles for SearchBar container */
-.controls {
-    display: flex;
-    /* Use flexbox for layout */
-    margin-bottom: 0.75rem;
-    /* Space below the search bar */
-    /* Add other styles as needed to match OutputPane, e.g., justify-content if more items were added */
-}
-
-/* Ensure SearchBar itself doesn't stretch unnecessarily if its internal container allows it */
-.controls>div {
-    /* Target the SearchBar's container div if needed */
-    flex-grow: 0;
-    /* Prevent the SearchBar container from growing */
-    /* You might need more specific selectors depending on SearchBar's structure */
 }
