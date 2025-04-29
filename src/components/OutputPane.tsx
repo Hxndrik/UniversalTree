@@ -8,7 +8,7 @@ import { useJavaScriptSafety } from '../contexts/JavaScriptSafetyContext'; // Im
 
 // Helper to generate a unique ID for scrolling
 const generateNodeId = (path: (string | number)[]): string => {
-    // Simple join, ensure keys/indices are valid for ID. Replace problematic chars.
+    // Simple join, ensure keys/indices are valid for ID. Replace problematic chars
     return `node-${path.map(p => String(p).replace(/[^a-zA-Z0-9_-]/g, '_')).join('-')}`;
 };
 
