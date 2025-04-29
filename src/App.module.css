@@ -1,0 +1,56 @@
+.appContainer {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  padding: 1.5rem; /* Increased padding */
+  gap: 1rem;
+  background: var(--gradient-bg); /* Ensure gradient covers full page */
+  color: var(--text-primary);
+  overflow: hidden; /* Prevent scrollbars on the main container */
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  flex-shrink: 0; /* Prevent header from shrinking */
+  position: relative; /* For ThemeToggle positioning */
+  padding: 0 0.5rem; /* Add some horizontal padding */
+}
+
+.title {
+  margin: 0;
+  font-size: 1.8rem;
+  font-weight: var(--font-weight-heavy);
+  color: var(--text-primary);
+}
+
+.mainContent {
+  display: flex;
+  flex-grow: 1; /* Take remaining height */
+  gap: 1rem;
+  overflow: hidden; /* Prevent content overflow */
+}
+
+.errorMessage {
+  position: fixed;
+  bottom: 1.5rem; /* Match container padding */
+  left: 1.5rem;
+  right: 1.5rem;
+  background-color: #e74c3c; /* Error color */
+  color: white;
+  padding: 0.75rem 1.2rem;
+  border-radius: var(--border-radius-medium); /* Consistent radius */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Slightly stronger shadow */
+  z-index: 1000;
+  font-size: 0.9rem;
+  font-family: monospace;
+  flex-shrink: 0;
+  animation: fadeIn 0.3s ease-out; /* Add subtle fade-in */
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}

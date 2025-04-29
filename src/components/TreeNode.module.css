@@ -1,0 +1,204 @@
+.treeNode {
+    /* Indentation handled by marginLeft in component style prop */
+    position: relative;
+    padding: 0.15em 0;
+    /* Slightly more vertical space */
+}
+
+.nodeContent {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    /* Always indicate clickability for expand/collapse */
+    padding: 0.1em 0.3em;
+    /* Padding for hover effect */
+    border-radius: var(--border-radius-small);
+    transition: background-color 0.15s ease-out;
+}
+
+.nodeContent:hover {
+    background-color: rgba(128, 128, 128, 0.1);
+    /* Subtle hover */
+}
+
+.toggleButton {
+    /* Keep cursor: pointer on nodeContent */
+    margin-right: 0.4em;
+    font-size: 0.8em;
+    color: var(--text-secondary);
+    transition: transform 0.15s ease-out;
+    width: 1em;
+    display: inline-block;
+    text-align: center;
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+/* .toggleButtonExpanded { */
+  /* transform: rotate(90deg); <- Remove this, component swaps icons */
+/* } */
+
+.nodeKey {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: var(--text-primary); /* Use primary text color for keys */
+    margin-right: 0.5em;
+    font-weight: var(--font-weight-bold);
+    flex-shrink: 0;
+    /* Prevent shrinking */
+}
+
+.nodeKey span { /* Target highlighted part */
+    /* Highlight background is handled by .highlight, ensure text color stays */
+    color: var(--text-primary);
+}
+
+/* Define theme-aware colors */
+.nodeValueString {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: #6A9955; /* Darker green (VSCode Dark+ like) */
+}
+
+/* Green */
+.nodeValueNumber {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: #2196f3;
+}
+
+/* Blue */
+.nodeValueBoolean {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: #ff9800;
+}
+
+/* Orange */
+.nodeValueNull {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: #9e9e9e;
+    font-style: italic;
+}
+
+/* Grey */
+.nodeValueObject,
+.nodeValueArray {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    color: var(--text-secondary);
+    font-style: italic;
+}
+
+/* Adjust highlight color based on theme */
+.highlight {
+    background-color: var(--highlight-bg);
+    border-radius: var(--border-radius-small);
+    padding: 0 0.1em;
+    margin: 0 -0.1em;
+    box-shadow: 0 0 0 1px var(--highlight-bg);
+    /* Ensure visibility */
+}
+
+/* Specific highlight colors for better contrast */
+.nodeValueString .highlight {
+    color: #1e4620; /* Very dark green text on highlight */
+    background-color: #d1e7dd; /* Light green background for highlight */
+}
+
+.nodeValueNumber .highlight {
+    color: #0d47a1;
+    background-color: #90caf9;
+}
+
+.nodeValueBoolean .highlight {
+    color: #e65100;
+    background-color: #ffcc80;
+}
+
+.nodeKey .highlight {
+    /* Use highlight background, but force text color */
+    color: var(--text-primary);
+    background-color: var(--highlight-bg);
+    /* Remove specific purple highlight for keys */
+}
+
+/* Light theme overrides for specific value colors if needed */
+body.light-mode .nodeValueString {
+    color: #098658; /* Dark green for light mode */
+}
+
+/* This is the correct .nodeValue block */
+.nodeValue {
+    font-family: 'Courier New', Courier, monospace; /* Match input box font */
+    white-space: pre-wrap;
+    /* Allow long values to wrap */
+    word-break: break-word;
+    /* Break long words/strings */
+    font-size: 0.9em; /* Slightly smaller font for values */
+}
+
+body.light-mode .nodeValueNull {
+    color: #757575;
+}
+
+/* Light theme highlight overrides */
+body.light-mode .nodeValueString .highlight {
+    color: #c8f0e1; /* Light green text on highlight */
+    background-color: #032f1b; /* Very dark green background for highlight */
+}
+
+body.light-mode .nodeValueNumber .highlight {
+    color: #90caf9;
+    background-color: #0d47a1;
+}
+
+body.light-mode .nodeValueBoolean .highlight {
+    color: #ffcc80;
+    background-color: #e65100;
+}
+
+body.light-mode .nodeKey .highlight {
+    /* Use highlight background, but force text color */
+    color: var(--text-primary);
+    background-color: var(--highlight-bg);
+    /* Remove specific purple highlight for keys */
+}
+
+/* Style for the nested UL within a TreeNode */
+.treeView {
+  padding: 0;
+  margin: 0;
+  list-style: none; /* Ensure nested lists also have no dots */
+}
+
+/* Style for the currently focused search result */
+.currentHighlight {
+  background-color: rgba(108, 92, 231, 0.3); /* More prominent highlight, adjust as needed */
+  outline: 1px solid var(--accent-primary); /* Add an outline */
+  /* Ensure padding doesn't collapse */
+   padding-top: 0.1em;
+   padding-bottom: 0.1em;
+   margin-top: -0.1em; /* Adjust slightly to prevent layout shift */
+   margin-bottom: -0.1em;
+   border-radius: var(--border-radius-small); /* Match other elements */
+}
+
+
+/* Optional: Add lines for visual structure (can be complex) */
+/* .treeNode::before {
+  content: '';
+  position: absolute;
+  left: -1em;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: var(--border-color);
+}
+.treeNode:last-child::before {
+  height: 0.8em;
+}
+.nodeContent::before {
+    content: '';
+    position: absolute;
+    left: -1em;
+    top: 0.8em;
+    width: 0.6em;
+    height: 1px;
+    background-color: var(--border-color);
+} */

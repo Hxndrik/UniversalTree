@@ -1,0 +1,69 @@
+.searchBarContainer {
+  position: relative; /* For positioning elements */
+  display: flex; /* Align items horizontally */
+  align-items: center;
+  margin-bottom: 0.75rem; /* Space below the search bar */
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: var(--border-radius-small);
+  transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+}
+
+.searchBarContainer:focus-within {
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px var(--highlight-bg);
+}
+
+.searchInput {
+  /* width: 100%; <- Let flexbox handle width */
+  flex-grow: 1; /* Take up available space */
+  padding: 0.5rem 0.75rem; /* Adjust padding as needed */
+  font-size: 0.9rem;
+  color: var(--text-primary);
+  background-color: transparent; /* Inherit from container */
+  border: none; /* Border is on container now */
+  border-radius: var(--border-radius-small);
+  outline: none;
+  transition: color var(--transition-speed) ease;
+}
+
+.searchIcon {
+  /* position: absolute; <- No longer needed with flex */
+  margin-left: 0.75rem; /* Space icon from left */
+  margin-right: 0.5rem; /* Space between icon and input */
+  color: var(--text-secondary);
+  flex-shrink: 0; /* Prevent icon shrinking */
+  /* pointer-events: none; <- Not needed */
+}
+
+.controlButton {
+  background: none;
+  border: none;
+  padding: 0.4rem;
+  margin: 0 0.1rem;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--border-radius-small);
+  transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+  flex-shrink: 0; /* Prevent buttons shrinking */
+}
+
+.controlButton:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-secondary);
+}
+
+.clearButton {
+  margin-right: 0.3rem; /* Space before results/nav */
+}
+
+.resultCount {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  margin: 0 0.5rem; /* Space around the count */
+  white-space: nowrap; /* Prevent wrapping */
+  flex-shrink: 0; /* Prevent count shrinking */
+}

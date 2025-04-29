@@ -1,0 +1,94 @@
+.inputPane {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    /* Take up available space */
+    padding: 1rem;
+    background-color: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 2px 5px var(--shadow-color);
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease;
+    overflow: hidden;
+    /* Prevent content overflow */
+}
+
+.title {
+    margin-bottom: 0.75rem;
+    font-weight: var(--font-weight-heavy);
+    color: var(--text-primary);
+}
+
+/* Add styles for the highlight overlay container */
+.textAreaContainer {
+    position: relative;
+    flex-grow: 1;
+    display: flex;
+    /* Add display flex to properly size children */
+    flex-direction: column;
+    /* Stack children vertically */
+    width: 100%;
+    height: 100%;
+    /* Ensure it takes full height */
+}
+
+.textArea {
+    position: relative;
+    flex-grow: 1;
+    /* Fill remaining vertical space */
+    width: 100%;
+    height: 100%;
+    /* Ensure it fills the container height */
+    padding: 0.75rem;
+    font-family: 'Courier New', Courier, monospace;
+    /* Monospace for code-like input */
+    font-size: 0.9rem;
+    line-height: 1.4;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-small);
+    resize: none;
+    /* Disable manual resizing */
+    outline: none;
+    transition: background-color var(--transition-speed) ease, border-color var(--transition-speed) ease, color var(--transition-speed) ease;
+}
+
+.textArea:focus {
+    border-color: var(--accent-primary);
+    box-shadow: 0 0 0 2px var(--highlight-bg);
+}
+
+/* Highlight styling for search results */
+.highlightMarker {
+    position: absolute;
+    background-color: rgba(255, 215, 0, 0.4);
+    /* Semi-transparent yellow */
+    border-radius: 2px;
+    pointer-events: none;
+    /* Allow clicks to pass through to textarea */
+    z-index: 5;
+}
+
+.currentHighlight {
+    background-color: rgba(255, 165, 0, 0.6);
+    /* More visible orange for current match */
+    outline: 1px solid rgb(255, 140, 0);
+}
+
+/* Add styles for SearchBar container */
+.controls {
+    display: flex;
+    /* Use flexbox for layout */
+    margin-bottom: 0.75rem;
+    /* Space below the search bar */
+    /* Add other styles as needed to match OutputPane, e.g., justify-content if more items were added */
+}
+
+/* Ensure SearchBar itself doesn't stretch unnecessarily if its internal container allows it */
+.controls>div {
+    /* Target the SearchBar's container div if needed */
+    flex-grow: 0;
+    /* Prevent the SearchBar container from growing */
+    /* You might need more specific selectors depending on SearchBar's structure */
+}

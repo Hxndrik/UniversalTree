@@ -1,0 +1,18 @@
+.themeToggleButton {
+  cursor: pointer;
+  background: none;
+  border: none;
+  font-size: 1.4rem; /* Slightly smaller */
+  padding: 0.4rem; /* Adjust padding */
+  color: var(--text-secondary); /* Use secondary text color */
+  border-radius: var(--border-radius-small);
+  transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+  display: flex; /* Align icon nicely */
+  align-items: center;
+  justify-content: center;
+}
+
+.themeToggleButton:hover {
+  color: var(--text-primary);
+  background-color: var(--bg-secondary); /* Subtle background on hover */
+}
