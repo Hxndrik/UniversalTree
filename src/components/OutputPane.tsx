@@ -67,6 +67,7 @@ interface OutputPaneProps {
     inputType: 'json' | 'xml' | 'unknown' | 'empty';
     searchTerm: string; // Add search term prop
     onSearchChange: (term: string) => void; // Add search change handler prop
+    onDataChange?: (newData: unknown) => void; // Add handler for data changes
     // Update ref type to match usage in App.tsx
     searchInputRef?: React.RefObject<HTMLInputElement | null>;
 }
@@ -77,6 +78,7 @@ const OutputPane: React.FC<OutputPaneProps> = ({
     inputType,
     searchTerm,
     onSearchChange,
+    onDataChange,
     searchInputRef,
 }) => {
     const [isAllExpanded, setIsAllExpanded] = useState<boolean | null>(null); // null: mixed/default, true: all expanded, false: all collapsed
@@ -142,6 +144,15 @@ const OutputPane: React.FC<OutputPaneProps> = ({
         ? searchResults[currentResultIndex].path
         : null;
 
+    // Handler for tree data changes
+    const handleTreeDataChange = useCallback(
+        (newData: unknown) => {
+            if (onDataChange) {
+                onDataChange(newData);
+            }
+        },
+        [onDataChange]
+    );
 
     const renderContent = () => {
         if (inputType === 'empty') {
@@ -159,6 +170,7 @@ const OutputPane: React.FC<OutputPaneProps> = ({
                     initialExpansionState={isAllExpanded}
                     searchTerm={searchTerm}
                     currentResultPath={currentResultPath} // Pass current path for highlight
+                    onChange={handleTreeDataChange} // Pass down the change handler
                 />
             );
         }

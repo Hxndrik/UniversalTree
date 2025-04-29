@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from 'react'; // Add useEffect and useRef
+import { useState, useEffect, useRef, useCallback } from 'react'; // Add useCallback
 import InputPane from './components/InputPane';
 import OutputPane from './components/OutputPane';
 import ThemeToggle from './components/ThemeToggle'; // Import ThemeToggle
@@ -29,10 +29,33 @@ const App: React.FC = () => { // Add React.FC type
     const [inputSearchTerm, setInputSearchTerm] = useState<string>(''); // State for input search
     const [outputSearchTerm, setOutputSearchTerm] = useState<string>(''); // State for output search
 
+    // Flag to prevent infinite update loops when syncing data changes
+    const isUpdatingFromOutput = useRef(false);
+
     // Fix ref types
     const inputSearchRef = useRef<HTMLInputElement>(null);
     const outputSearchRef = useRef<HTMLInputElement>(null);
     const inputTextAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Handler for data changes from the output pane
+    const handleDataChange = useCallback((newData: unknown) => {
+        // Prevent infinite loops by setting a flag
+        isUpdatingFromOutput.current = true;
+
+        try {
+            // Convert modified data back to formatted JSON
+            const formattedJson = JSON.stringify(newData, null, 2);
+            // Update the input text
+            setRawInput(formattedJson);
+        } catch (error) {
+            console.error('Error converting updated data to JSON:', error);
+        } finally {
+            // Reset the flag
+            setTimeout(() => {
+                isUpdatingFromOutput.current = false;
+            }, 0);
+        }
+    }, []);
 
     // Handler for Ctrl+F keyboard shortcut
     useEffect(() => {
@@ -91,6 +114,7 @@ const App: React.FC = () => { // Add React.FC type
                     searchTerm={outputSearchTerm}
                     onSearchChange={setOutputSearchTerm}
                     searchInputRef={outputSearchRef} // Pass the ref
+                    onDataChange={handleDataChange} // Add data change handler
                 />
             </div>
 

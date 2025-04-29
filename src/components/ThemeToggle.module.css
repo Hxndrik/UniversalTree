@@ -1,18 +1,94 @@
+.themeToggleContainer {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
 .themeToggleButton {
-  cursor: pointer;
-  background: none;
-  border: none;
-  font-size: 1.4rem; /* Slightly smaller */
-  padding: 0.4rem; /* Adjust padding */
-  color: var(--text-secondary); /* Use secondary text color */
-  border-radius: var(--border-radius-small);
-  transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
-  display: flex; /* Align icon nicely */
-  align-items: center;
-  justify-content: center;
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.4rem;
+    /* Slightly smaller */
+    padding: 0.4rem;
+    /* Adjust padding */
+    color: var(--text-secondary);
+    /* Use secondary text color */
+    border-radius: var(--border-radius-small);
+    transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+    display: flex;
+    /* Align icon nicely */
+    align-items: center;
+    justify-content: center;
 }
 
 .themeToggleButton:hover {
-  color: var(--text-primary);
-  background-color: var(--bg-secondary); /* Subtle background on hover */
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+    /* Subtle background on hover */
+}
+
+/* Options button styling */
+.themeOptionsButton {
+    cursor: pointer;
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    padding: 0.3rem;
+    margin-left: 2px;
+    color: var(--text-secondary);
+    border-radius: var(--border-radius-small);
+    transition: color var(--transition-speed) ease, background-color var(--transition-speed) ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.themeOptionsButton:hover {
+    color: var(--text-primary);
+    background-color: var(--bg-secondary);
+}
+
+/* Theme menu styling */
+.themeMenu {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    background-color: var(--bg-primary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-medium);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    min-width: 140px;
+    z-index: 100;
+    margin-top: 5px;
+    overflow: hidden;
+}
+
+/* Theme menu items */
+.themeMenuItem {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    width: 100%;
+    text-align: left;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-primary);
+    transition: background-color var(--transition-speed) ease;
+}
+
+.themeMenuItem:hover {
+    background-color: var(--bg-secondary);
+}
+
+.themeMenuItem.active {
+    background-color: var(--accent-secondary);
+    font-weight: var(--font-weight-bold);
+}
+
+/* Icon within menu items */
+.themeIcon {
+    margin-right: 8px;
+    font-size: 1rem;
 }
