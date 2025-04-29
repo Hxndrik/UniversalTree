@@ -25,19 +25,54 @@ const defaultJsonInput = `{
   }
 }`;
 
+// LocalStorage key for saving input data
+const STORAGE_KEY = 'universal-tree-input';
+
+// Helper function to get saved input from localStorage
+const getSavedInput = (): string => {
+    try {
+        const savedInput = localStorage.getItem(STORAGE_KEY);
+        return savedInput ? savedInput : defaultJsonInput;
+    } catch (error) {
+        console.error('Error retrieving saved input:', error);
+        return defaultJsonInput;
+    }
+};
+
 const App: React.FC = () => { // Add React.FC type
-    const [rawInput, setRawInput] = useState<string>(defaultJsonInput); // Initialize with default JSON
+    // Initialize with saved input from localStorage or default JSON
+    const [rawInput, setRawInput] = useState<string>(getSavedInput());
     const { data: parsedData, error: parseError, inputType, rawContent } = useParser(rawInput); // Use the parser hook
     const [inputSearchTerm, setInputSearchTerm] = useState<string>(''); // State for input search
     const [outputSearchTerm, setOutputSearchTerm] = useState<string>(''); // State for output search
 
     // Flag to prevent infinite update loops when syncing data changes
     const isUpdatingFromOutput = useRef(false);
+    // Debounce timer for localStorage updates
+    const saveTimerRef = useRef<number | null>(null);
 
     // Fix ref types
     const inputSearchRef = useRef<HTMLInputElement>(null);
     const outputSearchRef = useRef<HTMLInputElement>(null);
     const inputTextAreaRef = useRef<HTMLTextAreaElement>(null);
+
+    // Custom setRawInput function that saves to localStorage
+    const updateRawInput = useCallback((newInput: string) => {
+        setRawInput(newInput);
+
+        // Debounce the save operation to avoid excessive writes
+        if (saveTimerRef.current) {
+            window.clearTimeout(saveTimerRef.current);
+        }
+
+        saveTimerRef.current = window.setTimeout(() => {
+            try {
+                localStorage.setItem(STORAGE_KEY, newInput);
+            } catch (error) {
+                console.error('Error saving input to localStorage:', error);
+            }
+        }, 500); // Wait 500ms after typing stops before saving
+    }, []);
 
     // Handler for data changes from the output pane
     const handleDataChange = useCallback((newData: unknown) => {
@@ -45,18 +80,56 @@ const App: React.FC = () => { // Add React.FC type
         isUpdatingFromOutput.current = true;
 
         try {
-            // Convert modified data back to formatted JSON
-            const formattedJson = JSON.stringify(newData, null, 2);
-            // Update the input text
-            setRawInput(formattedJson);
+            let updatedInput: string;
+
+            // Handle data based on the original input type
+            if (inputType === 'xml') {
+                // For XML, convert back to XML format
+                import('fast-xml-parser').then(({ XMLBuilder }) => {
+                    try {
+                        // Configure the XML builder with options matching the parser
+                        const builder = new XMLBuilder({
+                            ignoreAttributes: false,
+                            attributeNamePrefix: "@_",
+                            suppressBooleanAttributes: false,
+                            format: true, // Pretty print
+                            indentBy: '  ', // 2 spaces
+                        });
+                        const xmlContent = builder.build(newData);
+                        // Update the input text and save to localStorage
+                        updateRawInput(xmlContent);
+                    } catch (err) {
+                        console.error('Error converting data back to XML:', err);
+                        // Fallback to JSON if XML conversion fails
+                        const fallbackJson = JSON.stringify(newData, null, 2);
+                        updateRawInput(fallbackJson);
+                    }
+                }).catch(err => {
+                    console.error('Error importing XMLBuilder:', err);
+                });
+            } else {
+                // For JSON and other formats, convert to JSON
+                updatedInput = JSON.stringify(newData, null, 2);
+                // Update the input text and save to localStorage
+                updateRawInput(updatedInput);
+            }
         } catch (error) {
-            console.error('Error converting updated data to JSON:', error);
+            console.error('Error converting updated data:', error);
         } finally {
             // Reset the flag
             setTimeout(() => {
                 isUpdatingFromOutput.current = false;
             }, 0);
         }
+    }, [updateRawInput, inputType]);
+
+    // Clean up on unmount
+    useEffect(() => {
+        return () => {
+            if (saveTimerRef.current) {
+                window.clearTimeout(saveTimerRef.current);
+            }
+        };
     }, []);
 
     // Handler for Ctrl+F keyboard shortcut
@@ -104,7 +177,7 @@ const App: React.FC = () => { // Add React.FC type
                 <div className={styles.mainContent}>
                     <InputPane
                         inputValue={rawInput}
-                        onInputChange={setRawInput}
+                        onInputChange={updateRawInput} // Use updateRawInput instead of setRawInput
                         searchTerm={inputSearchTerm}
                         onSearchChange={setInputSearchTerm}
                         searchInputRef={inputSearchRef} // Pass the ref
