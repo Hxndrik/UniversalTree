@@ -3,7 +3,7 @@ name: Deploy
 on:
   push:
     branches:
-      - main  # Changed from 'master' to 'main' for consistency with the condition below
+      - master 
 
 jobs:
   build:
@@ -35,7 +35,7 @@ jobs:
     name: Deploy
     needs: build
     runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    if: github.ref == 'refs/heads/master'
     permissions:
       contents: write  # Added explicit permissions for GitHub Pages deployment
 
