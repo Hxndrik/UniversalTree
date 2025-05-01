@@ -1,5 +1,5 @@
 # Universal Tree
-
+## Free to use: https://hxndrik.github.io/UniversalTree/
 <div align="center">
   <img src="public/vite.svg" alt="Universal Tree Logo" width="120" height="120" />
   <h3>Visualize and edit hierarchical data with ease</h3>
